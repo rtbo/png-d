@@ -1,0 +1,10 @@
+{
+	"name": "png-d",
+	"authors": [
+		"Remi Thebault"
+	],
+	"description": "D bindings to libpng",
+	"copyright": "Copyright © 2018, Remi Thebault",
+	"license": "MIT",
+	"preBuildCommands": [ "dub run --single $PACKAGE_DIR/build.d" ]
+}

@@ -1,0 +1,19 @@
+.dub
+docs.json
+__dummy.html
+docs/
+png-d.so
+png-d.dylib
+png-d.dll
+libpng-d.a
+png-d.lib
+png-d-test-*
+*.exe
+*.o
+*.obj
+*.lst
+
+build
+
+# generated code:
+source/libpng/libconf.d
