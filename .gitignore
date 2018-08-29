@@ -13,7 +13,12 @@ png-d-test-*
 *.obj
 *.lst
 
+# build executable
 build
 
 # generated code:
 source/libpng/libconf.d
+
+# example
+example/example
+dlang_logo_blue.png
