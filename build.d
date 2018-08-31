@@ -266,19 +266,24 @@ void main()
     import pkg_config;
     import std.file : exists;
     import std.path : buildPath;
-    import std.stdio : stderr, stdout;
+    import std.process : environment;
+    import std.stdio : File, stderr, stdout;
 
     auto options = pngOptions();
     auto settings = pngSettings();
     bool foundLibconf;
 
+    string[] lflags;
+
     try {
-        auto lib = pkgConfig("libpng", "1.6")
+        auto lib = pkgConfig("libpng", "1.8")
             .cflags()
             .libs()
             .msvc()
             .invoke();
-        lib.echoDubLines();
+        // dub#1453 not merged
+        // lib.echoDubLines();
+        lflags ~= lib.lflags;
         foreach (ip; lib.includePaths) {
             const libconf = buildPath(ip, "pnglibconf.h");
             if (exists(libconf)) {
@@ -336,7 +341,9 @@ void main()
             .target(libTarget("png16"))
             .build(cmake);
 
-        stdout.writefln(`dub:sdl:sourceFiles "%s"`, res.artifact("png16"));
+        // dub#1453 not merged
+        // stdout.writefln(`dub:sdl:sourceFiles "%s"`, res.artifact("png16"));
+        lflags ~= res.artifact("png16");
 
         const possibleLibConfs = [
             res.dirs.install("include", "pnglibconf.h"),
@@ -354,4 +361,14 @@ void main()
             "Using conservative configuration in libpng.libconf.");
     }
     genConfD(options, settings);
+
+    // following will be replaced by dub#1453
+
+    const flagFilename = buildPath(environment.get("DUB_PACKAGE_DIR", "."), "linker_flags.txt");
+    stdout.writeln("generating ", flagFilename);
+
+    auto flagF = File(flagFilename, "w");
+    foreach (lf; lflags) {
+        flagF.writeln(lf);
+    }
 }

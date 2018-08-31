@@ -16,8 +16,9 @@ png-d-test-*
 # build executable
 build
 
-# generated code:
+# generated files:
 source/libpng/libconf.d
+linker_flags.txt
 
 # example
 example/example
