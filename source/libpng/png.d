@@ -38,56 +38,6 @@ auto png_libpng_ver()
     return png_get_header_ver(null);
 }
 
-/* This file is arranged in several sections:
- *
- * 1. [omitted]
- * 2. Any configuration options that can be specified by for the application
- *    code when it is built.  (Build time configuration is in pnglibconf.h)
- * 3. Type definitions (base types are defined in pngconf.h), structure
- *    definitions.
- * 4. Exported library functions.
- * 5. Simplified API.
- * 6. Implementation options.
- *
- * The library source code has additional files (principally pngpriv.h) that
- * allow configuration of the library.
- */
-
-/* Section 2: run time configuration
- * See pnglibconf.h for build time configuration
- *
- * Run time configuration allows the application to choose between
- * implementations of certain arithmetic APIs.  The default is set
- * at build time and recorded in pnglibconf.h, but it is safe to
- * override these (and only these) settings.  Note that this won't
- * change what the library does, only application code, and the
- * settings can (and probably should) be made on a per-file basis
- * by setting the #defines before including png.h
- *
- * Use macros to read integers from PNG data or use the exported
- * functions?
- *   PNG_USE_READ_MACROS: use the macros (see below)  Note that
- *     the macros evaluate their argument multiple times.
- *   PNG_NO_USE_READ_MACROS: call the relevant library function.
- *
- * Use the alternative algorithm for compositing alpha samples that
- * does not use division?
- *   PNG_READ_COMPOSITE_NODIV_SUPPORTED: use the 'no division'
- *      algorithm.
- *   PNG_NO_READ_COMPOSITE_NODIV: use the 'division' algorithm.
- *
- * How to handle benign errors if PNG_ALLOW_BENIGN_ERRORS is
- * false?
- *   PNG_ALLOW_BENIGN_ERRORS: map calls to the benign error
- *      APIs to png_warning.
- * Otherwise the calls are mapped to png_error.
- */
-
-/* Section 3: type definitions, including structures and compile time
- * constants.
- * See pngconf.h for base types that vary by machine/system
- */
-
 struct png_struct;
 alias png_const_structp = const(png_struct)*;
 alias png_structp = png_struct*;
