@@ -1,6 +1,6 @@
 /+ dub.sdl:
-    dependency "dbuild" version="*"
-    dependency "pkg-config" version="*"
+    dependency "dbuild" version="~>0.0.1"
+    dependency "pkg-config" version="~>0.0.1"
 +/
 
 bool[string] pngOptions()
@@ -276,7 +276,7 @@ void main()
     string[] lflags;
 
     try {
-        auto lib = pkgConfig("libpng", "1.8")
+        auto lib = pkgConfig("libpng", "1.6")
             .cflags()
             .libs()
             .msvc()
