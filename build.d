@@ -309,7 +309,7 @@ void main()
             stdout.writeln("Could not find zlib. Building from source...");
 
             auto zlibSrc = archiveFetchSource(
-                "http://zlib.net/zlib-1.2.11.tar.gz",
+                "https://zlib.net/zlib-1.2.11.tar.gz",
                 "1c9f62f0778697a09d36121ead88e08e"
             );
             auto zlibCMake = CMake.create().buildSystem();
@@ -326,24 +326,31 @@ void main()
                 .target(libTarget(zlibTargetName))
                 .build(zlibCMake);
 
-            cmakeOptions ~= [ "-DPNG_BUILD_ZLIB="~zlibRes.dirs.installDir ];
+            cmakeOptions ~= [ "-DPNG_BUILD_ZLIB="~zlibRes.dirs.installDir, 
+                "-DZLIB_INCLUDE_DIR="~zlibRes.dirs.installDir.buildPath("include") ];
         }
 
         auto src = archiveFetchSource(
-            "http://prdownloads.sourceforge.net/libpng/libpng-1.6.35.tar.gz",
+            "https://prdownloads.sourceforge.net/libpng/libpng-1.6.35.tar.gz",
             "d94d9587c421ac42316b6ab8f64f1b85"
         );
         auto cmake = CMake.create(null, cmakeOptions).buildSystem();
+        version (Windows) {
+            enum pngTarget = "libpng16_static";
+        }
+        else {
+            enum pngTarget = "png16";
+        }
         auto res = Build
             .dubWorkDir("png")
             .src(src)
             .release()
-            .target(libTarget("png16"))
+            .target(libTarget(pngTarget))
             .build(cmake);
 
         // dub#1453 not merged
         // stdout.writefln(`dub:sdl:sourceFiles "%s"`, res.artifact("png16"));
-        lflags ~= res.artifact("png16");
+        lflags ~= res.artifact(pngTarget);
 
         const possibleLibConfs = [
             res.dirs.install("include", "pnglibconf.h"),
@@ -361,6 +368,11 @@ void main()
             "Using conservative configuration in libpng.libconf.");
     }
     genConfD(options, settings);
+
+    version(Windows) {
+        lflags ~= "/NODEFAULTLIB:libcmt";
+        lflags ~= "msvcrt.lib";
+    }
 
     // following will be replaced by dub#1453
 

@@ -11,10 +11,15 @@ static if (PNG_STDIO_SUPPORTED) {
 static if (PNG_SETJMP_SUPPORTED) {
     version(Posix) {
         import core.sys.posix.setjmp : jmp_buf;
+        enum pngSetJmpSupported = true;
     }
-    version(Windows) {
-        // setjmp?
+    else {
+        // setjmp bindings on Windows ?
+        enum pngSetJmpSupported = false;
     }
+}
+else {
+    enum pngSetJmpSupported = false;
 }
 static if (PNG_tIME_SUPPORTED) {
     import core.stdc.time : time_t, tm;
@@ -288,7 +293,7 @@ static if (PNG_USER_CHUNKS_SUPPORTED) {
     alias png_user_chunk_ptr = int function (png_structp, png_unknown_chunkp);
 }
 
-static if (PNG_SETJMP_SUPPORTED) {
+static if (pngSetJmpSupported) {
     // note, following is signature of longjmp
     alias png_longjmp_ptr = void function(ref jmp_buf, int);
     // PNG_FUNCTION(void, (PNGCAPI *png_longjmp_ptr), PNGARG((jmp_buf, int)), typedef);
@@ -342,7 +347,7 @@ size_t png_get_compression_buffer_size (png_const_structrp png_ptr);
 
 void png_set_compression_buffer_size (png_structrp png_ptr, size_t size);
 
-static if (PNG_SETJMP_SUPPORTED) {
+static if (pngSetJmpSupported) {
     jmp_buf* png_set_longjmp_fn (png_structrp png_ptr,
             png_longjmp_ptr longjmp_fn, size_t jmp_buf_size);
 }
